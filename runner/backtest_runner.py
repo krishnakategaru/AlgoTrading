@@ -1,12 +1,14 @@
 import backtrader as bt
 
 from strategies.technical_with_sentiment_strategy.optimized_strategy import OptimizedStrategy
+from strategies.technical_with_sentiment_strategy.custom_strategy import Customstrategy
 from strategies.technical_with_sentiment_strategy.sentiment_data import SentimentData
+
 
 
 class BacktestRunner:
     @staticmethod
-    def run_backtest(data, stock_ticker, start_date, end_date):
+    def run_backtest(data, stock_ticker, start_date, end_date,indicators):
         """
         Run Backtrader backtest with the provided data.
 
@@ -19,14 +21,16 @@ class BacktestRunner:
         cerebro = bt.Cerebro()
 
         # Convert data to Backtrader format
-        data_feed = SentimentData(dataname=data)
+        data_feed = SentimentData(dataname= data)
 
 
         # Add data to cerebro
         cerebro.adddata(data_feed)
 
+        # # Add strategy with parameters
+        # cerebro.addstrategy(OptimizedStrategy)
         # Add strategy with parameters
-        cerebro.addstrategy(OptimizedStrategy)
+        cerebro.addstrategy(Customstrategy, indicators=indicators)
 
         # Set initial cash and commission
         cerebro.broker.set_cash(100000)
@@ -46,6 +50,7 @@ class BacktestRunner:
 
         # Get results from analyzers
         returns = thestrat.analyzers.returns.get_analysis()
+        # returns = returns - 0.005
         sharpe_ratio = thestrat.analyzers.sharperatio.get_analysis()
         drawdown = thestrat.analyzers.drawdown.get_analysis()
         trades = thestrat.analyzers.tradeanalyzer.get_analysis()
@@ -57,6 +62,7 @@ class BacktestRunner:
 
         # Print the backtesting report
         print("\n--- Backtesting Report ---")
+        print(f"Indicators: {', '.join(indicators)}")
         print("Stock Ticker: {}".format(stock_ticker))
         print("Start Date: {}".format(start_date))
         print("End Date: {}".format(end_date))
@@ -70,3 +76,20 @@ class BacktestRunner:
         print("\n--- Additional Metrics ---")
         print("{:<15} {:<15} {:<15}".format("Value at Risk", "VWR", "Total Trades"))
         print("{:<15.2f} {:<15.4f} {:<15}".format(vwr['vwr'], vwr['vwr'], trades.total.total))
+
+        # Create a dictionary to store the results
+        results = {
+            'Indicators': ', '.join(indicators),
+            'Stock Ticker': stock_ticker,
+            'Start Date': start_date,
+            'End Date': end_date,
+            'Initial Portfolio Value': cerebro.broker.startingcash,
+            'Final Portfolio Value': cerebro.broker.getvalue(),
+            'Total Return': returns['rtot'] * 100,
+            'Annualized Return': returns['ravg'] * 100 * 252,
+            'Max Drawdown': drawdown['max']['drawdown'] * 100,
+            'Value at Risk': vwr['vwr'],
+            'VWR': vwr['vwr'],
+            'Total Trades': trades.total.total
+        }
+        return results

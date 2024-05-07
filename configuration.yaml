@@ -1,0 +1,20 @@
+# alpaca
+alpaca_api_key : PKXYA7GNO7SOUL7PTE7L
+alpaca_api_secret : htiVJFWXeXDQ8cIJ1aEj9mpqBDOAI7gJWByq6lGm
+
+
+#openai 
+openai_api_key :
+
+#newsapi
+newsapi_api_key : e0ec181e8a6a468d9c46510ad01613f2
+
+
+#twitter
+twitter_api_key : 5UjnF60ZIZ98cPPHb7jbhQjTq
+twitter_api_secret : LoqHmKBOmCVXvlvpxn8BK1Qoks1bLMAC3qoy4ktb9NuA6aOUie
+twitter_bearer_secret : AAAAAAAAAAAAAAAAAAAAAGGLtgEAAAAAFWdVtzKcgLS7GY8jt4Q7pP%2FWLHo%3DOZorWXwrIsca83dPsh7GpnE7Deba1ELR0WlKDywR7mgmn2GT70
+twitter_access_token : 1786698924637487104-iHQqcGPqC8O30qXmqGZRSTuMQqgSEO
+twitter_acces_token_secret :  TJvFVDGROz5bk7txEXTc1hMw0tU6o0MH9E6iXVERjT6fM
+twitter_client_id :  c2pCUTlVWGlJN2F5MnFlWG1lY286MTpjaQ
+twitter_client_secret :  hL584uJfcBD__6-IqpIF7bMhe_J40ku-KYO-OX2Luh7uk30-kK
