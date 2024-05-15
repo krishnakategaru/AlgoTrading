@@ -1,6 +1,7 @@
 from alpaca_trade_api import REST
 import yaml
 from datetime import datetime, timedelta
+import requests
 
 import sys
 sys.path.append("D:\krishna\msdsm//trimister 6\Project\KrishnaProject\AlgoTrading")
@@ -8,6 +9,65 @@ sys.path.append("D:\krishna\msdsm//trimister 6\Project\KrishnaProject\AlgoTradin
 with open('configuration.yaml', 'r') as file:
     config = yaml.safe_load(file)
 
+class NewsAPI:
+    def __init__(self):
+        self.api_key = config['newsapi_api_key']
+        
+    
+    def get_stock_news(self,stock_ticker, start_date, end_date):
+        """
+        Fetches financial news related to a specific stock ticker within a date range.
+
+        Args:
+            stock_ticker (str): The stock ticker symbol (e.g., AAPL, MSFT).
+            start_date (str): Start date in YYYY-MM-DD format.
+            end_date (str): End date in YYYY-MM-DD format.
+            api_key (str): Your NewsAPI API key.
+
+        Returns:
+            list: A list of dictionaries containing news articles.
+        """
+       
+        
+        formatted_news = []
+        current_date = start_date
+        next_date = (datetime.strptime(current_date, "%Y-%m-%d") + timedelta(days=1)).strftime("%Y-%m-%d")
+
+
+        # Loop through the date range in increments of one day
+        while current_date <= end_date:
+
+            url = "https://newsapi.org/v2/everything"
+            params = {
+                "q": stock_ticker,
+                "source" : "cnbc",
+                "from": current_date,
+                "to": next_date,
+                "apiKey": self.api_key
+            }
+
+            response = requests.get(url, params=params)
+            news_articles = response.json()
+            #
+
+            for article in news_articles:
+                summary = article['content']
+                title = article['title']
+                timestamp = article['publishedAt']
+
+                relevant_info = {
+                    'timestamp': timestamp,
+                    'title': title,
+                    'summary': summary
+                }
+
+                formatted_news.append(relevant_info)
+
+            # Move to the next day
+            current_date = (datetime.strptime(current_date, "%Y-%m-%d") + timedelta(days=1)).strftime("%Y-%m-%d")
+            next_date = (datetime.strptime(current_date, "%Y-%m-%d") + timedelta(days=2)).strftime("%Y-%m-%d")
+
+        return formatted_news
 
 class AlpacaNewsFetcher:
     """
