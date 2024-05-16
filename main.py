@@ -6,13 +6,13 @@ warnings.filterwarnings("ignore")
 from processor.stock_data_processor import StockDataProcessor
 from runner.backtest_runner import BacktestRunner
 from sentiment_analysis.sentiment_analysis_pipeline import do_sentiment_analysis
-from sentiment_analysis.sentiment_analysis_trasformer_model import preprae_sentiment_from_transformer
+from sentiment_analysis.sentiment_analysis_trasformer_model import prepare_sentiment_from_transformer
 
 if __name__ == '__main__':
     # Configuration
-    STOCK_TICKER = 'MSFT'
-    START_DATE = '2022-01-01'
-    END_DATE = '2022-03-01'
+    STOCK_TICKER = 'INFY'
+    START_DATE = '2024-01-01'
+    END_DATE = '2024-05-01'
     news_sentiment = True
     ohlc_sentiment = True
     SENTIMENT_DATA_PATH = 'data/stock_sentiment_data.csv'

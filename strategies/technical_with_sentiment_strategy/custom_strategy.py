@@ -74,7 +74,7 @@ class Customstrategy(bt.Strategy):
             self.envelopes = bt.indicators.Envelope(self.data.close, period=self.params.envelopes_ema_window, devfactor=self.params.envelopes_percentage/100)
 
         self.sentiment = self.datas[0].signal if len(self.datas) > 0 else None
-
+        self.transformer_sentiment = self.datas[0].transformer_sentiment if len(self.datas) > 0 else None
     def next(self):
         """
         Executes the trading logic on each iteration.
@@ -115,15 +115,15 @@ class Customstrategy(bt.Strategy):
             sell_signal += 1
         elif "envelopes" in self.indicators and self.data.close[0] < self.envelopes.lines.ervlo[0]:
             buy_signal += 1
-        print(self.sentiment)
+        
         if "news_sentiment" in self.indicators and self.sentiment is not None and self.sentiment[0] > 0:
             buy_signal += 1
         elif "news_sentiment" in self.indicators and self.sentiment is not None and self.sentiment[0] < 0:
             sell_signal += 1
         
-        if "transformer_sentiment" in self.indicators and self.sentiment is not None and self.sentiment[1] > 0:
+        if "transformer_sentiment" in self.indicators and self.transformer_sentiment is not None and self.transformer_sentiment[0] > 0:
             buy_signal += 1
-        else :
+        elif "transformer_sentiment" in self.indicators and self.transformer_sentiment is not None and self.transformer_sentiment[0] < 0:
             sell_signal += 1
 
         if buy_signal > sell_signal:
