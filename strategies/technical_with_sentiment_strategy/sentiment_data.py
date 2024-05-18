@@ -11,12 +11,13 @@ class SentimentData(bt.feeds.GenericCSVData):
     - openinterest (int): Column index for the open interest in the CSV file.
     """
 
-    lines = ('signal', 'transformer_sentiment')
+    lines = ('signal', 'transformer_sentiment','ohlc_ta_model_sentiment')
 
     params = (
         ('dtformat', '%Y-%m-%d'),
         ('date', 0),
         ('signal', 7),
         ('transformer_sentiment', 8),
+        ('ohlc_ta_model_sentiment', 9),
         ('openinterest', -1)
     )

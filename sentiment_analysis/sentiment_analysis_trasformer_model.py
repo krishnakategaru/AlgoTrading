@@ -120,7 +120,9 @@ def train_transformer(symbol_to_fetch,start_date ,end_date,no_model = None):
     # # Reshape X_train_data_normalizer
     X_train = X_train_data_normalizer.reshape(X_train_data_normalizer.shape[0], X_train_data_normalizer.shape[1], 1)
     X_test = X_test_data_normalizer.reshape(X_test_data_normalizer.shape[0], X_test_data_normalizer.shape[1], 1)
-    if not no_model :
+    
+        
+    if no_model == 'transformer' :
         model = build_model(
             input_shape,
             head_size=head_size,
@@ -155,15 +157,38 @@ def train_transformer(symbol_to_fetch,start_date ,end_date,no_model = None):
         model.save('models/transformer_'+f"{symbol_to_fetch}"+"_model.h5")
         model.save('models/transformer_'+f"{symbol_to_fetch}"+"_model.keras")
         no_model = model
+
+    elif no_model == 'svm':
+        from sklearn.svm import SVC
+        from sklearn.metrics import accuracy_score,classification_report
+
+        # Create an SVM classifier
+        svm_model = SVC(kernel='linear', random_state=42)
+
+        # Train the model on the training data
+        svm_model.fit(X_train_data_normalizer, y_train_data)
+
+        # Predict labels for the test set
+        y_pred = svm_model.predict(X_test_data_normalizer)
+            
+        # Calculate accuracy
+        accuracy = accuracy_score(y_test_data, y_pred)
+        print("Accuracy:", accuracy)
+        print(classification_report(y_test_data,y_pred))
+        no_model =  svm_model
+        return no_model,X_test_data_normalizer,test_data
+
     return no_model,X_test,test_data
     #predictions
-def prepare_sentiment_from_transformer(symbol_to_fetch,start_date,end_date):
+def prepare_sentiment_from_transformer(symbol_to_fetch,start_date,end_date,model = None):
     try :
-        print("entered")
-        model = tf.keras.models.load_model('models/transformer_'+f"{symbol_to_fetch}"+"_model.keras")
-        print("passed")
-        _,X_test,test_data = train_transformer(symbol_to_fetch = symbol_to_fetch, start_date = start_date, end_date = end_date,no_model=model)
-    
+        if  model == 'trasnformer':
+            print("entered")
+            model = tf.keras.models.load_model('models/transformer_'+f"{symbol_to_fetch}"+"_model.keras")
+            print("passed")
+            _,X_test,test_data = train_transformer(symbol_to_fetch = symbol_to_fetch, start_date = start_date, end_date = end_date,no_model=model)
+        elif  model == 'svm' :
+            model,X_test,test_data  = train_transformer(symbol_to_fetch = symbol_to_fetch, start_date = start_date, end_date = end_date,no_model=model)
     except:
         model,X_test,test_data = train_transformer(symbol_to_fetch = symbol_to_fetch, start_date = start_date, end_date = end_date)
     y_pred = model.predict(X_test) # this is the sentiment data 

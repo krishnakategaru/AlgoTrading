@@ -75,6 +75,7 @@ class Customstrategy(bt.Strategy):
 
         self.sentiment = self.datas[0].signal if len(self.datas) > 0 else None
         self.transformer_sentiment = self.datas[0].transformer_sentiment if len(self.datas) > 0 else None
+        self.ohlc_ta_model_sentiment = self.datas[0].ohlc_ta_model_sentiment if len(self.datas) > 0 else None
     def next(self):
         """
         Executes the trading logic on each iteration.
@@ -124,6 +125,11 @@ class Customstrategy(bt.Strategy):
         if "transformer_sentiment" in self.indicators and self.transformer_sentiment is not None and self.transformer_sentiment[0] > 0:
             buy_signal += 1
         elif "transformer_sentiment" in self.indicators and self.transformer_sentiment is not None and self.transformer_sentiment[0] < 0:
+            sell_signal += 1
+        
+        if "full_model_transformer_sentiment" in self.indicators and self.ohlc_ta_model_sentiment is not None and self.ohlc_ta_model_sentiment[0] > 0:
+            buy_signal += 1
+        elif "full_model_transformer_sentiment" in self.indicators and self.ohlc_ta_model_sentiment is not None and self.ohlc_ta_model_sentiment[0] < 0:
             sell_signal += 1
 
         if buy_signal > sell_signal:
